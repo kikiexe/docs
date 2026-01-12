@@ -3,193 +3,206 @@ title: Overview
 sidebar_position: 2
 ---
 
-# Protocol Overview
+# Overview
 
-ZK-Yield is a next-generation DeFi protocol that combines **yield aggregation** with **zero-knowledge privacy**. This page provides a comprehensive overview of how the protocol works.
+## What is Veilfi?
 
-## The Big Picture
+**Veilfi** is a privacy-preserving yield aggregator that enables users to earn yield across multiple DeFi strategies while maintaining complete financial privacy through Zero-Knowledge proofs. The protocol operates on Mantle blockchain and aggregates yield from battle-tested protocols like Aave, Lido, and Uniswap.
 
-```mermaid
-graph TB
-    A[User] -->|Deposit + ZK Proof| B[StrategyVaultV2]
-    B -->|Allocate| C[Aave Strategy]
-    B -->|Allocate| D[Lido Strategy]
-    B -->|Allocate| E[Uniswap Strategy]
-    C -->|Yield| B
-    D -->|Yield| B
-    E -->|Yield| B
-    B -->|Withdraw + Proof| A
-    F[ComplianceManager] -->|Verify KYC| B
-    G[ZK Verifier] -->|Verify Proofs| B
-```
+## 1-Minute Protocol Flow
 
-## Core Components
+### Problem → Solution → Flow
 
-### 1. StrategyVaultV2_Multi
+**Problem**: DeFi protocols offer attractive yields but force radical transparency → Every transaction is public
 
-The **vault** is the central smart contract that:
+**Veilfi's Solution**: Privacy layer + Multi-strategy aggregation = Private yield earning
 
-- Accepts user deposits
-- Distributes funds across strategies
-- Tracks user shares
-- Processes withdrawals
-- Verifies zero-knowledge proofs
+**How It Works**:
 
-**Key Functions**:
+1. **User deposits funds** ($1,000) → Enters shared anonymity pool
+2. **Optional KYC via ZK proof** → Compliance without identity exposure
+3. **Vault allocates to strategies** → 40% Aave, 30% Lido, 30% Uniswap
+4. **Strategies earn yield** → From multiple DeFi protocols simultaneously
+5. **Privacy preserved** → ZK proofs verify ownership without revealing amounts
+6. **User withdraws** → Anonymously with cryptographic proof of shares
+
+**Privacy Guarantee**: Deposit amounts, balances, and withdrawal values remain private to outsiders.
+
+## Core Mechanism
+
+The protocol implements a **privacy-first vault model** where:
+
+- Users deposit into a shared vault creating an anonymity set
+- Funds are strategically allocated across multiple yield sources
+- Zero-Knowledge circuits verify user actions without revealing sensitive data
+- KYC compliance is achieved through cryptographic proofs, not data storage
+
+## Key Components
+
+### Privacy Layer (ZK Circuits)
+
+The privacy foundation using Circom-based ZK-SNARKs:
+
+- **KYC Verification Circuit**: Proves compliance status without revealing identity
+- **Balance Proof Circuit**: Demonstrates sufficient balance without exposing amounts
+- **Ownership Proof**: Verifies vault share ownership anonymously
+
+### Strategy Vault (StrategyVaultV2)
+
+The core contract managing all deposits and allocations:
+
+- Accepts deposits with optional ZK proofs for enhanced privacy
+- Issues proportional shares to depositors
+- Allocates capital across multiple DeFi strategies
+- Processes withdrawals with privacy protection
+- Verifies all ZK proofs on-chain
+
+### Compliance Manager (ComplianceManagerV2)
+
+Privacy-preserving KYC system:
+
+- Stores only cryptographic proof hashes (not personal data)
+- Enables regulatory compliance without sacrificing privacy
+- Allows users to prove KYC status anonymously
+- Supports institutional adoption with compliant privacy
+
+### Multi-Strategy Engine
+
+Diversified yield generation across protocols:
+
+| Strategy    | Protocol     | Type                | Target APY |
+| ----------- | ------------ | ------------------- | ---------- |
+| **Aave**    | Aave V3      | Lending             | 3-8%       |
+| **Lido**    | Lido Finance | ETH Staking         | 4-5%       |
+| **Uniswap** | Uniswap V3   | Liquidity Provision | 10-30%\*   |
+
+\*_Variable based on pool fees and volume_
+
+## Technical Implementation
+
+### Smart Contract Architecture
 
 ```solidity
-function deposit() external payable
-function depositWithProof(proof, signals) external payable
-function withdraw(uint256 shares) external
-function allocateToStrategies() external onlyOwner
-function harvestYields() external onlyOwner
+StrategyVaultV2_Multi (Core Vault)
+├── deposit() / depositWithProof()
+├── withdraw(shares)
+├── allocateToStrategies() [Admin]
+└── harvestYields() [Admin]
+
+ComplianceManagerV2 (KYC Manager)
+├── verifyKYC(proof)
+└── isCompliant(user)
+
+Strategies (Yield Generators)
+├── MockAaveStrategy
+├── MockLidoStrategy
+└── MockUniswapStrategy
 ```
 
-### 2. ComplianceManagerV2
+### Network Deployment
 
-Manages **KYC compliance** without storing personal data:
-
-- Stores ZK proof hashes
-- Verifies user compliance status
-- Enables privacy-preserving verification
-
-**Privacy Guarantee**: No personal information is stored on-chain.
-
-### 3. DeFi Strategies
-
-Each strategy wraps a DeFi protocol:
-
-| Strategy    | Protocol     | Purpose     | APY Range |
-| ----------- | ------------ | ----------- | --------- |
-| **Aave**    | Aave V3      | Lending     | 3-8%      |
-| **Lido**    | Lido Finance | ETH Staking | 4-5%      |
-| **Uniswap** | Uniswap V3   | Liquidity   | 10-30%    |
-
-### 4. ZK Circuits
-
-Two main circuits power privacy:
-
-**KYC Verification Circuit**:
-
-```circom
-template KycVerification() {
-    signal input userId;
-    signal input kycHash;
-    signal input timestamp;
-    signal output isValid;
-
-    // Verify without revealing identity
-}
-```
-
-**Balance Proof Circuit**:
-
-```circom
-template BalanceProof() {
-    signal input balance;
-    signal input minRequired;
-    signal output sufficient;
-
-    // Prove balance >= minRequired without showing balance
-}
-```
-
-## How It Works
-
-### User Deposit Flow
-
-1. **User connects wallet** → RainbowKit integration
-2. **Complete KYC once** → Generate ZK proof of identity
-3. **Deposit funds** → With optional balance proof for privacy
-4. **Vault issues shares** → Proportional to deposit amount
-5. **Funds allocated** → Admin distributes to strategies
-6. **Earn yields** → From multiple DeFi protocols
-
-### Admin Management Flow
-
-1. **Monitor strategy performance** → Track APY, TVL, risks
-2. **Rebalance allocation** → Move funds to best-performing strategies
-3. **Harvest yields** → Collect earned interest/rewards
-4. **Compound or distribute** → Reinvest or pay to users
-
-### Withdrawal Flow
-
-1. **User requests withdrawal** → Specifies share amount
-2. **Vault calculates value** → Share price × amount
-3. **Liquidate from strategies** → If needed
-4. **Transfer to user** → With privacy maintained
-
-## Privacy Features
-
-### What's Private?
-
-✅ **Deposit amounts** - Hidden with ZK proofs  
-✅ **Withdrawal amounts** - Protected by cryptography  
-✅ **User balances** - Never revealed publicly  
-✅ **KYC identity** - Proven without exposure  
-✅ **Transaction history** - Encrypted metadata
-
-### What's Public?
-
-❌ **Total vault TVL** - Transparent on-chain  
-❌ **Strategy allocations** - Visible percentages  
-❌ **Smart contract code** - Open source  
-❌ **Proof verification** - Anyone can verify
-
-## Security Model
-
-### Trust Assumptions
-
-1. **Smart Contract Security** - Audited Solidity code
-2. **ZK Circuit Correctness** - Circom circuits reviewed
-3. **Strategy Safety** - Only vetted DeFi protocols
-4. **Admin Honesty** - Multi-sig for critical operations
-
-### Attack Vectors & Mitigations
-
-| Attack                 | Mitigation               |
-| ---------------------- | ------------------------ |
-| Smart contract exploit | Audits + test coverage   |
-| ZK proof forgery       | Cryptographic soundness  |
-| Strategy protocol hack | Diversification + limits |
-| Malicious admin        | Multi-sig + timelock     |
-
-## Economic Model
-
-### Fee Structure
-
-- **Deposit Fee**: 0% (no entry barrier)
-- **Management Fee**: 1% annually (fair for active management)
-- **Performance Fee**: 10% of profits (aligned incentives)
-- **Withdrawal Fee**: 0.1% (prevent attacks)
-
-### Yield Distribution
-
-```
-Gross Yield (e.g., 10%)
-  ├─ 89% → User (direct benefit)
-  ├─ 10% → Performance fee (protocol)
-  └─ 1% → Management fee (operations)
-```
-
-## Deployment Information
-
-### Mantle Sepolia Testnet
-
-- **Network**: Mantle Sepolia
+- **Blockchain**: Mantle Sepolia Testnet
 - **Chain ID**: 5003
-- **RPC**: https://rpc.sepolia.mantle.xyz
 - **Explorer**: https://explorer.sepolia.mantle.xyz
 
-### Contract Addresses
+### ZK Circuit Stack
 
-See [Contract Addresses](../smart-contracts/deployment/contract-addresses) for deployed contracts.
+- **Framework**: Circom + SnarkJS
+- **Proof System**: Groth16
+- **Trusted Setup**: Powers of Tau ceremony
+- **Verification**: On-chain Solidity verifiers
 
-## Next Steps
+## MVP Status (Hackathon Version)
 
-Learn more about specific aspects:
+### ✅ What's Live Now
 
-- [Core Concepts](../core-concepts/key-concepts-definitions/yield-aggregation) - Understand key terms
-- [Protocol Design](../protocol-design/architecture-overview/core-vault-layer) - Deep dive into architecture
-- [ZK Circuits](../zk-circuits/introduction) - Explore privacy implementation
-- [User Guide](../core-flow/user-flow/wallet-connection) - Start using the protocol
+- Multi-strategy vault with 3 protocols (Aave, Lido, Uniswap)
+- ZK-SNARK circuits for KYC and balance verification
+- Privacy-preserving deposit/withdrawal flows
+- Admin dashboard for strategy management
+- Smart contract deployment on Mantle Sepolia
+
+### 🔄 Planned Enhancements
+
+- Dynamic rebalancing algorithm
+- More DeFi strategy integrations
+- Advanced privacy features (stealth addresses)
+- Gas optimization for proof verification
+- Mainnet deployment with audit
+
+## Key Features
+
+### Capital Efficiency
+
+- **Single deposit, multiple yields**: One transaction earns from 3+ protocols
+- **Gas savings**: Batch allocations instead of individual strategy deposits
+- **Optimized capital**: Smart rebalancing maximizes returns
+
+### Security Model
+
+- **Privacy by Design**: ZK proofs instead of trusted intermediaries
+- **Non-custodial**: Users maintain control of funds
+- **Strategy diversification**: Risk spread across protocols
+- **Transparent verification**: Anyone can verify proofs without seeing amounts
+
+### Transparency
+
+- **Open source**: All contracts and circuits are public
+- **Verifiable yields**: On-chain proof of returns
+- **Auditable privacy**: ZK proofs can be verified by anyone
+- **Real-time monitoring**: Total TVL and allocations are visible
+
+## Technology Stack
+
+### Smart Contracts
+
+- **Language**: Solidity 0.8.20
+- **Framework**: Foundry
+- **Standards**: ERC-4626 (Vault), ERC-20 (Shares)
+- **Testing**: Comprehensive Foundry test suite
+
+### Frontend
+
+- **Framework**: Next.js 14
+- **Wallet**: RainbowKit + Wagmi
+- **Styling**: TailwindCSS
+- **Charts**: Recharts for yield visualization
+
+### Network Infrastructure
+
+- **Deployment**: Mantle Sepolia (Testnet)
+- **RPC**: Mantle RPC endpoints
+- **Fallback**: Ankr/Infura for reliability
+
+## Project Goals
+
+### Primary Objectives
+
+1. **Prove privacy + yield are compatible**: DeFi doesn't require full transparency
+2. **Showcase ZK-SNARKs in production**: Practical privacy implementation
+3. **Enable compliant privacy**: KYC without data exposure
+4. **Optimize yield aggregation**: Multi-strategy beats single protocol
+
+### Success Criteria
+
+**For Users**:
+
+- Earn competitive yields (5-15% APY)
+- Maintain complete financial privacy
+- Simple UX (wallet connect → deposit → earn)
+
+**For Institutions**:
+
+- Regulatory compliance via ZK-KYC
+- Privacy for treasury operations
+- Professional-grade security
+
+**For Developers**:
+
+- Open-source reference implementation
+- Reusable ZK circuits
+- Integration-friendly APIs
+
+---
+
+**Next Steps**: Learn about [why Veilfi exists](./why-zk-yield-exists/problem-space) or jump to [who should use it](./who-is-this-for/privacy-conscious-users).

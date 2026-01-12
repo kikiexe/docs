@@ -15,7 +15,7 @@ structure = {
             "context-positioning.md": "Context & Positioning",
             "overview.md": "Overview",
             "why-zk-yield-exists": {
-                "label": "Why ZK-Yield Exists",
+                "label": "Why Veilfi Exists",
                 "items": {
                     "problem-space.md": "Problem Space",
                     "solution-overview.md": "Solution Overview"
@@ -183,32 +183,47 @@ structure = {
             "transparent-on-chain-verification.md": "Transparent On-Chain Verification"
         }
     },
-    "smart-contracts": {
+    "technical-details": {
         "position": 8,
-        "label": "Smart Contracts",
+        "label": "Technical Details",
         "items": {
-            "overview.md": "Smart Contracts Overview",
-            "core-contracts": {
-                "label": "Core Contracts",
+            "smart-contracts": {
+                "label": "Smart Contract Architecture",
                 "items": {
-                    "strategy-vault-v2.md": "StrategyVaultV2",
-                    "compliance-manager-v2.md": "ComplianceManagerV2"
+                    "overview.md": "Smart Contracts Overview",
+                    "core-contracts": {
+                        "label": "Core Contracts",
+                        "items": {
+                            "strategy-vault-v2.md": "StrategyVaultV2",
+                            "compliance-manager-v2.md": "ComplianceManagerV2"
+                        }
+                    },
+                    "strategy-contracts": {
+                        "label": "Strategy Contracts",
+                        "items": {
+                            "mock-aave-strategy.md": "Mock Aave Strategy",
+                            "mock-lido-strategy.md": "Mock Lido Strategy",
+                            "mock-uniswap-strategy.md": "Mock Uniswap Strategy"
+                        }
+                    },
+                    "deployment": {
+                        "label": "Deployment & Verification",
+                        "items": {
+                            "mantle-sepolia.md": "Mantle Sepolia Testnet",
+                            "contract-addresses.md": "Contract Addresses",
+                            "verification.md": "Contract Verification"
+                        }
+                    }
                 }
             },
-            "strategy-contracts": {
-                "label": "Strategy Contracts",
+            "security": {
+                "label": "Security Considerations",
                 "items": {
-                    "mock-aave-strategy.md": "Mock Aave Strategy",
-                    "mock-lido-strategy.md": "Mock Lido Strategy",
-                    "mock-uniswap-strategy.md": "Mock Uniswap Strategy"
-                }
-            },
-            "deployment": {
-                "label": "Deployment",
-                "items": {
-                    "mantle-sepolia.md": "Mantle Sepolia Testnet",
-                    "contract-addresses.md": "Contract Addresses",
-                    "verification.md": "Contract Verification"
+                    "overview.md": "Security Overview",
+                    "zk-proof-security.md": "ZK Proof Security",
+                    "smart-contract-audit.md": "Smart Contract Audit",
+                    "best-practices.md": "Best Practices",
+                    "known-risks.md": "Known Risks"
                 }
             }
         }
@@ -219,7 +234,7 @@ structure = {
         "items": {
             "tech-stack.md": "Tech Stack",
             "pages": {
-                "label": "Pages",
+                "label": "User Flows",
                 "items": {
                     "landing-page.md": "Landing Page",
                     "login-kyc.md": "Login & KYC",
@@ -237,39 +252,9 @@ structure = {
             }
         }
     },
-    "developer-guide": {
-        "position": 10,
-        "label": "Developer Guide",
-        "items": {
-            "quick-start.md": "Quick Start",
-            "setup": {
-                "label": "Setup",
-                "items": {
-                    "prerequisites.md": "Prerequisites",
-                    "installation.md": "Installation",
-                    "environment-config.md": "Environment Configuration"
-                }
-            },
-            "development": {
-                "label": "Development",
-                "items": {
-                    "run-frontend.md": "Run Frontend",
-                    "deploy-contracts.md": "Deploy Contracts",
-                    "build-circuits.md": "Build ZK Circuits"
-                }
-            },
-            "testing": {
-                "label": "Testing",
-                "items": {
-                    "smart-contract-tests.md": "Smart Contract Tests",
-                    "zk-circuit-tests.md": "ZK Circuit Tests",
-                    "integration-tests.md": "Integration Tests"
-                }
-            }
-        }
-    },
+
     "integration-guide": {
-        "position": 11,
+        "position": 10,
         "label": "Integration Guide",
         "items": {
             "overview.md": "Integration Overview",
@@ -278,28 +263,22 @@ structure = {
             "zk-proof-generation.md": "ZK Proof Generation"
         }
     },
-    "security": {
-        "position": 12,
-        "label": "Security",
+    "conclusion": {
+        "position": 11,
+        "label": "Conclusion",
         "items": {
-            "overview.md": "Security Overview",
-            "zk-proof-security.md": "ZK Proof Security",
-            "smart-contract-audit.md": "Smart Contract Audit",
-            "best-practices.md": "Best Practices",
-            "known-risks.md": "Known Risks"
-        }
-    },
-    "roadmap": {
-        "position": 13,
-        "label": "Roadmap",
-        "items": {
-            "current-status.md": "Current Status",
-            "upcoming-features.md": "Upcoming Features",
-            "long-term-vision.md": "Long-term Vision"
+            "roadmap": {
+                "label": "Roadmap",
+                "items": {
+                    "current-status.md": "Current Status",
+                    "upcoming-features.md": "Upcoming Features",
+                    "long-term-vision.md": "Long-term Vision"
+                }
+            }
         }
     },
     "support": {
-        "position": 14,
+        "position": 12,
         "label": "Support",
         "items": {
             "faq.md": "FAQ",

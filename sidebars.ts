@@ -1,7 +1,7 @@
 import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 
 const sidebars: SidebarsConfig = {
-  // Main sidebar for ZK-Yield documentation
+  // Main sidebar for Veilfi documentation
   tutorialSidebar: [
     {
       type: 'category',
@@ -12,7 +12,7 @@ const sidebars: SidebarsConfig = {
         'introduction/overview',
         {
           type: 'category',
-          label: 'Why ZK-Yield Exists',
+          label: 'Why Veilfi Exists',
           items: [
             'introduction/why-zk-yield-exists/problem-space',
             'introduction/why-zk-yield-exists/solution-overview',
@@ -164,19 +164,8 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Admin Flow',
-          items: [
-            'core-flow/admin-flow/manage-strategies',
-            'core-flow/admin-flow/allocate-funds',
-            'core-flow/admin-flow/harvest-yields',
-            'core-flow/admin-flow/kyc-management',
-          ],
-        },
-        {
-          type: 'category',
           label: 'Privacy Flow',
           items: [
-            'core-flow/privacy-flow/generate-zk-proofs',
             'core-flow/privacy-flow/private-deposits',
             'core-flow/privacy-flow/private-withdrawals',
           ],
@@ -196,21 +185,15 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Smart Contracts',
+      label: 'Technical Details',
       items: [
-        'smart-contracts/overview',
         {
           type: 'category',
-          label: 'Core Contracts',
+          label: 'Smart Contract Architecture',
           items: [
+            'smart-contracts/overview',
             'smart-contracts/core-contracts/strategy-vault-v2',
             'smart-contracts/core-contracts/compliance-manager-v2',
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Strategy Contracts',
-          items: [
             'smart-contracts/strategy-contracts/mock-aave-strategy',
             'smart-contracts/strategy-contracts/mock-lido-strategy',
             'smart-contracts/strategy-contracts/mock-uniswap-strategy',
@@ -218,11 +201,22 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Deployment',
+          label: 'Deployment & Verification',
           items: [
             'smart-contracts/deployment/mantle-sepolia',
             'smart-contracts/deployment/contract-addresses',
             'smart-contracts/deployment/verification',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Security Considerations',
+          items: [
+            'security/overview',
+            'security/zk-proof-security',
+            'security/smart-contract-audit',
+            'security/best-practices',
+            'security/known-risks',
           ],
         },
       ],
@@ -234,7 +228,7 @@ const sidebars: SidebarsConfig = {
         'frontend-ux/tech-stack',
         {
           type: 'category',
-          label: 'Pages',
+          label: 'User Flows',
           items: [
             'frontend-ux/pages/landing-page',
             'frontend-ux/pages/login-kyc',
@@ -255,40 +249,6 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Developer Guide',
-      items: [
-        'developer-guide/quick-start',
-        {
-          type: 'category',
-          label: 'Setup',
-          items: [
-            'developer-guide/setup/prerequisites',
-            'developer-guide/setup/installation',
-            'developer-guide/setup/environment-config',
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Development',
-          items: [
-            'developer-guide/development/run-frontend',
-            'developer-guide/development/deploy-contracts',
-            'developer-guide/development/build-circuits',
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Testing',
-          items: [
-            'developer-guide/testing/smart-contract-tests',
-            'developer-guide/testing/zk-circuit-tests',
-            'developer-guide/testing/integration-tests',
-          ],
-        },
-      ],
-    },
-    {
-      type: 'category',
       label: 'Integration Guide',
       items: [
         'integration-guide/overview',
@@ -299,32 +259,19 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Security',
+      label: 'Conclusion',
       items: [
-        'security/overview',
-        'security/zk-proof-security',
-        'security/smart-contract-audit',
-        'security/best-practices',
-        'security/known-risks',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Roadmap',
-      items: [
-        'roadmap/current-status',
-        'roadmap/upcoming-features',
-        'roadmap/long-term-vision',
+        'conclusion/design-philosophy',
+        'conclusion/long-term-vision',
       ],
     },
     {
       type: 'category',
       label: 'Support',
       items: [
-        'support/faq',
-        'support/troubleshooting',
+        'support/documentation',
         'support/community',
-        'support/contributing',
+        'support/security-contact',
       ],
     },
   ],

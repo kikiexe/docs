@@ -3,293 +3,339 @@ title: Introduction to ZK Circuits
 sidebar_position: 1
 ---
 
-# Zero-Knowledge Circuits
+# Introduction to ZK Circuits
 
-Zero-Knowledge circuits are the **heart of ZK-Yield's privacy features**. This section explains how we use **Circom** and **ZK-SNARKs** to enable privacy-preserving DeFi.
+ZK Circuits are the cryptographic foundation of Veilfi's privacy layer, enabling users to prove statements about their data without revealing the data itself.
 
-## What are Zero-Knowledge Proofs?
+## What are ZK Circuits?
 
-A **zero-knowledge proof** (ZKP) allows one party to prove to another that a statement is true **without revealing any information** beyond the validity of the statement itself.
+**ZK Circuits** are programmable cryptographic proofs written in specialized languages like **Circom**. They define the logic for Zero-Knowledge proof generation and verification.
 
-### Real-World Analogy
-
-Imagine you want to prove you're over 18 without showing your birthdate:
-
-- ❌ **Traditional**: Show ID with birthdate → Age revealed
-- ✅ **Zero-Knowledge**: Generate proof of age → Only "over 18" confirmed
-
-### In ZK-Yield
-
-We use ZKPs to prove:
-
-- ✅ "I completed KYC" → Without revealing identity
-- ✅ "I have sufficient balance" → Without showing exact amount
-- ✅ "This transaction is valid" → Without exposing details
-
-## Why Circom?
-
-**Circom** is a domain-specific language for writing arithmetic circuits. It's the industry standard for ZK-SNARK development.
-
-### Benefits
-
-| Feature                | Benefit                       |
-| ---------------------- | ----------------------------- |
-| **Domain-Specific**    | Optimized for ZK circuits     |
-| **Efficient**          | Generates compact proofs      |
-| **Well-Tested**        | Used by Tornado Cash, Polygon |
-| **Developer-Friendly** | Familiar syntax               |
-
-### ZK-Yield Stack
+### Analogy: Circuit as a Lock
 
 ```
-┌─────────────────────────────────────┐
-│  Frontend (JavaScript)              │
-│    ↓ (generates witness)            │
-│  Circom Circuit (.circom)           │
-│    ↓ (compiles to)                  │
-│  R1CS Constraints                   │
-│    ↓ (generates)                    │
-│  Proof (.proof) + Public Signals    │
-│    ↓ (verifies on)                  │
-│  Smart Contract (Solidity)          │
-└─────────────────────────────────────┘
+Traditional Program:
+Input → Compute → Output (all visible)
+
+ZK Circuit:
+Secret Input → Compute → Proof (output visible, input hidden)
+              ↓
+         Verifier checks: Proof valid? ✅/❌
+         Verifier CANNOT see: Secret input
 ```
 
-## ZK-Yield Circuits
-
-We implement **two primary circuits**:
+## Veilfi's ZK Circuits
 
 ### 1. KYC Verification Circuit
 
-**Purpose**: Prove KYC completion without revealing identity.
+**Purpose**: Prove user is KYC-verified without revealing identity.
 
 **Inputs**:
 
-- `userId` (private) - User's unique identifier
-- `kycHash` (private) - Hash of KYC data
-- `timestamp` (private) - When KYC was completed
+- 🔒 Private: `userId`, `kycHash`, `timestamp`, `signature`
+- 🔓 Public: `isValid` (1 or 0)
 
-**Outputs**:
+**Logic**: Verify cryptographic signature matches KYC certificate.
 
-- `isValid` (public) - Boolean: is user KYC verified?
-
-**Circuit Logic**:
-
-```circom
-template KycVerification() {
-    signal input userId;
-    signal input kycHash;
-    signal input timestamp;
-    signal output isValid;
-
-    // Verify hash matches expected pattern
-    component hasher = Poseidon(2);
-    hasher.inputs[0] <== userId;
-    hasher.inputs[1] <== timestamp;
-
-    // Check if KYC hash is valid
-    isValid <== (hasher.out === kycHash) ? 1 : 0;
-}
-```
+**Use Case**: Institutional compliance.
 
 ### 2. Balance Proof Circuit
 
-**Purpose**: Prove sufficient balance without revealing exact amount.
+**Purpose**: Prove balance ≥ threshold without revealing exact amount.
 
 **Inputs**:
 
-- `balance` (private) - User's actual balance
-- `minRequired` (private) - Minimum balance needed
-- `secret` (private) - User's secret for uniqueness
+- 🔒 Private: `actualBalance`
+- 🔓 Public: `minRequired`, `sufficient` (1/0)
 
-**Outputs**:
+**Logic**: Check `actualBalance >= minRequired`.
 
-- `sufficient` (public) - Boolean: balance >= minRequired?
-- `commitment` (public) - Commitment to balance
+**Use Case**: Lending applications (prove solvency).
 
-**Circuit Logic**:
+### 3. Deposit Proof Circuit (Future)
+
+**Purpose**: Hide deposit amount during private deposits.
+
+**Inputs**:
+
+- 🔒 Private: `depositAmount`, `userSecret`
+- 🔓 Public: `commitment`
+
+**Logic**: Generate commitment = `hash(amount + secret)`.
+
+**Use Case**: Financial privacy.
+
+## Circuit Workflow
+
+```
+┌──────────────────────────────────────────┐
+│  1. Circuit Design (Circom)              │
+│     Write .circom file                   │
+└──────────────┬───────────────────────────┘
+               ↓
+┌──────────────────────────────────────────┐
+│  2. Compilation                          │
+│     circom → R1CS + WASM + Witness       │
+└──────────────┬───────────────────────────┘
+               ↓
+┌──────────────────────────────────────────┐
+│  3. Trusted Setup                        │
+│     Generate proving/verification keys   │
+└──────────────┬───────────────────────────┘
+               ↓
+┌──────────────────────────────────────────┐
+│  4. Proof Generation (User's Browser)    │
+│     Input → WASM → Proof (~10 seconds)   │
+└──────────────┬───────────────────────────┘
+               ↓
+┌──────────────────────────────────────────┐
+│  5. Verification (Smart Contract)        │
+│     Proof → Groth16Verifier → ✅/❌      │
+└──────────────────────────────────────────┘
+```
+
+## Technology Stack
+
+### Circom Language
+
+Domain-specific language for ZK circuits:
 
 ```circom
-template BalanceProof() {
-    signal input balance;
-    signal input minRequired;
-    signal input secret;
+pragma circom 2.0.0;
 
-    signal output sufficient;
-    signal output commitment;
+template Example() {
+    signal input a;      // Private input
+    signal input b;      // Private input
+    signal output c;     // Public output
 
-    // Verify balance is sufficient
-    component isGte = GreaterEqThan(252);
-    isGte.in[0] <== balance;
-    isGte.in[1] <== minRequired;
-    sufficient <== isGte.out;
-
-    // Generate commitment to balance
-    component hasher = Poseidon(2);
-    hasher.inputs[0] <== balance;
-    hasher.inputs[1] <== secret;
-    commitment <== hasher.out;
+    c <== a * b;         // Constraint: c must equal a*b
 }
+
+component main = Example();
 ```
 
-## How Proofs Work
+**Features**:
 
-### Generation Flow
+- Declarative syntax
+- Constraint-based (R1CS)
+- Compile to WASM + witness generator
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Frontend
-    participant Circuit
-    participant Contract
+### SnarkJS
 
-    User->>Frontend: Submit private data
-    Frontend->>Circuit: Generate witness
-    Circuit->>Frontend: Create proof
-    Frontend->>Contract: Submit proof + public signals
-    Contract->>Contract: Verify proof
-    Contract->>User: Transaction approved
+JavaScript/TypeScript library for proof generation:
+
+```javascript
+import { groth16 } from "snarkjs";
+
+// Generate proof
+const { proof, publicSignals } = await groth16.fullProve(
+  input,
+  "circuit.wasm",
+  "circuit_final.zkey"
+);
+
+// Verify proof (off-chain)
+const verified = await groth16.verify(verificationKey, publicSignals, proof);
 ```
 
-### Verification Flow
+### Groth16 Proof System
 
-1. **User inputs** → Private data (never sent to blockchain)
-2. **Witness generation** → Convert inputs to circuit format
-3. **Proof generation** → Create cryptographic proof
-4. **Public signals** → Extract public outputs
-5. **On-chain verification** → Smart contract verifies proof
-6. **Execution** → If valid, transaction proceeds
+**Properties**:
 
-## Security Properties
+- Proof size: ~200 bytes (constant)
+- Verification: ~5ms (~300k gas on-chain)
+- Setup: Trusted ceremony required
+
+**Trade-off**: Small proofs + fast verification, but needs trusted setup.
+
+## Circuit Components (Building Blocks)
+
+Veilfi uses `circomlib` for common operations:
+
+### Hash Functions
+
+```circom
+include "circomlib/poseidon.circom";
+
+component hasher = Poseidon(2);
+hasher.inputs[0] <== value1;
+hasher.inputs[1] <== value2;
+output <== hasher.out;
+```
+
+### Comparators
+
+```circom
+include "circomlib/comparators.circom";
+
+component gt = GreaterThan(64);
+gt.in[0] <== a;
+gt.in[1] <== b;
+// gt.out = 1 if a > b, else 0
+```
+
+### Signature Verification
+
+```circom
+include "circomlib/ecdsa.circom";
+
+component sigCheck = ECDSAVerify();
+sigCheck.signature <== providedSignature;
+sigCheck.message <== messageHash;
+// sigCheck.valid = 1 if signature valid
+```
+
+## Security
 
 ### Soundness
 
-**Property**: It's computationally infeasible to create a valid proof for a false statement.
+**Guarantee**: If statement is false, attacker cannot generate valid proof (except with negligible probability).
 
-**In ZK-Yield**: You can't fake KYC or balance proofs.
+**Example**: Cannot prove `balance ≥ 100 ETH` if actual balance is 50 ETH.
 
 ### Zero-Knowledge
 
-**Property**: The proof reveals nothing about the private inputs.
+**Guarantee**: Proof reveals nothing beyond the statement's truth.
 
-**In ZK-Yield**: Your identity and balance remain private.
+**Example**: Proof of "balance ≥ 50 ETH" doesn't reveal if balance is 50, 100, or 1000 ETH.
 
 ### Completeness
 
-**Property**: A valid proof will always verify successfully.
+**Guarantee**: If statement is true, honest user can always generate valid proof.
 
-**In ZK-Yield**: Honest users can always prove their claims.
+**Example**: If user has 100 ETH, they CAN prove "balance ≥ 50 ETH".
 
-## Implementation Details
+## Performance Considerations
 
-### Libraries Used
+### Proof Generation Time
 
-- **snarkjs**: JavaScript library for proof generation
-- **circomlib**: Standard Circom circuit library
-- **Poseidon**: Hash function optimized for ZK circuits
+| Circuit Complexity   | Constraints | Generation Time |
+| -------------------- | ----------- | --------------- |
+| **KYC Verification** | ~1,000      | ~3-5 seconds    |
+| **Balance Proof**    | ~500        | ~2-3 seconds    |
+| **Complex Logic**    | ~10,000     | ~15-30 seconds  |
 
-### Proof Size
+**Optimization**: Use Web Workers to avoid blocking UI.
 
-- **Proof**: ~200-300 bytes
-- **Public Signals**: 32 bytes each
-- **Gas Cost**: ~250k-400k gas to verify
+### Gas Costs
 
-### Performance
+| Operation                | Gas Cost       |
+| ------------------------ | -------------- |
+| **Proof Verification**   | 280-320k gas   |
+| **Standard Transaction** | ~21k gas       |
+| **Overhead**             | ~13x expensive |
 
-| Operation          | Time   | Cost                 |
-| ------------------ | ------ | -------------------- |
-| Witness generation | ~100ms | Free (off-chain)     |
-| Proof generation   | ~2-5s  | Free (off-chain)     |
-| Proof verification | ~0.5s  | ~0.01 ETH (on-chain) |
+**Trade-off**: Privacy costs extra gas, but worth it for sensitive operations.
 
-## Privacy Guarantees
+## Development Tools
 
-### What Attackers Can't Learn
-
-❌ User's real identity (from KYC proof)  
-❌ Exact balance amount (from balance proof)  
-❌ Transaction history (from deposit/withdraw proofs)  
-❌ Private signals (from zero-knowledge property)
-
-### What's Provably Secure
-
-✅ Proof validity (cryptographic soundness)  
-✅ No information leakage (zero-knowledge property)  
-✅ Tamper-proof (binding commitments)  
-✅ Verifiable by anyone (public verifiability)
-
-## Developer Resources
-
-### Circuit Development
+### Circom Compiler
 
 ```bash
+# Install
+npm install -g circom
+
 # Compile circuit
 circom circuit.circom --r1cs --wasm --sym
 
-# Generate trusted setup
-snarkjs groth16 setup circuit.r1cs pot.ptau circuit_0000.zkey
-
-# Generate proof
-snarkjs groth16 prove circuit.zkey witness.wtns proof.json public.json
-
-# Verify proof
-snarkjs groth16 verify verification_key.json public.json proof.json
+# Outputs:
+# - circuit.r1cs (constraint system)
+# - circuit.wasm (witness generator)
+# - circuit.sym (debug symbols)
 ```
 
-### Integration
+### SnarkJS CLI
 
-See our guides:
+```bash
+# Install
+npm install -g snarkjs
 
-- [Circom Setup](./implementation/circom-setup) - Install and configure
-- [Proof Generation](./implementation/proof-generation) - Generate proofs in frontend
-- [Proof Verification](./implementation/proof-verification) - Verify in smart contracts
+# Setup trusted ceremony
+snarkjs groth16 setup circuit.r1cs powersOfTau.ptau circuit_0000.zkey
 
-## Use Cases in ZK-Yield
+# Generate verification key
+snarkjs zkey export verificationkey circuit_final.zkey vkey.json
 
-### 1. Private Deposits
+# Export Solidity verifier
+snarkjs zkey export solidityverifier circuit_final.zkey Verifier.sol
+```
 
-User proves they have sufficient balance without revealing amount:
+## Circuit Design Best Practices
+
+### 1. Minimize Constraints
+
+```circom
+// ❌ Bad: Unnecessary constraints
+signal a, b, c, d;
+c <== a + b;
+d <== c * 2;  // Extra constraint
+
+// ✅ Good: Direct computation
+signal a, b, d;
+d <== (a + b) * 2;  // Single constraint
+```
+
+**Impact**: Fewer constraints = faster proof generation.
+
+### 2. Use Efficient Hash Functions
+
+```circom
+// ❌ Avoid: SHA-256 (expensive in ZK)
+// Requires ~25,000 constraints
+
+// ✅ Use: Poseidon (ZK-friendly)
+// Requires ~150 constraints
+include "circomlib/poseidon.circom";
+```
+
+### 3. Proper Input Validation
+
+```circom
+// Ensure inputs are within valid range
+component rangeCheck = Num2Bits(64);
+rangeCheck.in <== userInput;
+// Forces userInput to be 64-bit number
+```
+
+## Testing Circuits
+
+### Unit Testing
 
 ```javascript
-// Frontend generates proof
-const proof = await generateBalanceProof(balance, minDeposit, secret);
+const wasm_tester = require("circom_tester").wasm;
 
-// Contract verifies and accepts deposit
-await vault.depositWithProof(proof.a, proof.b, proof.c, proof.signals);
+describe("KYC Circuit", () => {
+  it("Should verify valid KYC", async () => {
+    const circuit = await wasm_tester("kyc_verification.circom");
+
+    const input = {
+      userId: 12345,
+      kycHash: "0x...",
+      timestamp: 1704067200,
+    };
+
+    const witness = await circuit.calculateWitness(input);
+    await circuit.checkConstraints(witness);
+
+    // Check output is valid (1)
+    expect(witness[1]).toBe(1);
+  });
+});
 ```
 
-### 2. Compliant KYC
+## Audit Considerations
 
-User proves KYC completion without exposing documents:
+ZK circuits require specialized audits:
 
-```javascript
-// Generate KYC proof once
-const kycProof = await generateKycProof(userId, kycHash, timestamp);
+- **Logic errors**: Incorrect constraints allow invalid proofs
+- **Under-constrained**: Missing constraints enable attacks
+- **Trusted setup**: Ensure ceremony participants are honest
 
-// Use for all future transactions
-await vault.deposit({ proof: kycProof });
-```
-
-### 3. Private Withdrawals
-
-User withdraws without revealing new balance:
-
-```javascript
-// Prove sufficient shares without showing total holdings
-const withdrawProof = await generateWithdrawProof(shares, minShares);
-
-await vault.withdrawWithProof(shares, withdrawProof);
-```
-
-## Next Steps
-
-Learn more about our circuit implementations:
-
-- [KYC Verification Circuit](./circuit-design/kyc-verification) - Detailed KYC circuit design
-- [Balance Proof Circuit](./circuit-design/balance-proof) - Balance verification circuit
-- [Circom Setup](./implementation/circom-setup) - Get started with development
-- [Proof Generation](./implementation/proof-generation) - Generate proofs in your app
+**Veilfi Status**: Circuits audited by [Auditor Name] (planned).
 
 ---
 
-**Ready to dive deeper?** Check out the circuit design section or start with the developer guide.
+**Next Steps**:
+
+- [KYC Verification Circuit](./circuit-design/kyc-verification) - Detailed circuit design
+- [Circom Setup](./implementation/circom-setup) - Development environment setup
