@@ -295,4 +295,4 @@ Savings: ~150k gas = ~30% efficiency gain
 **Next Steps**:
 
 - [Supported Protocols](./supported-protocols/aave-strategy) - Detailed protocol integrations
-- [Yield Optimization](./yield-optimization/auto-rebalancing) - How yields are maximized
+- [Rebalancing Strategy](./strategy-management/rebalancing) - How yields are maximized

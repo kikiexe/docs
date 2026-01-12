@@ -86,4 +86,4 @@ For privacy-conscious users:
 
 **Congratulations!** You've completed the **Core Flow** section.
 
-**Next**: Explore [Key Features](../../key-features/multi-strategy-vault), [Smart Contracts](../../technical-details/overview), or other sections.
+**Next**: Explore [Key Features](../../key-features/privacy-preserving-transactions), [Smart Contracts](../../smart-contracts/overview), or other sections.

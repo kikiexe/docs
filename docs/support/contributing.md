@@ -328,7 +328,7 @@ Top contributors featured on:
 
 ## Code of Conduct
 
-All contributors must follow our [Code of Conduct](../community#code-of-conduct):
+All contributors must follow our Code of Conduct (see [Community](./community)):
 
 - Be respectful
 - Be inclusive

@@ -165,4 +165,4 @@ function Dashboard() {
 
 **Congratulations!** You've completed the **Frontend & UX** section.
 
-**Next Steps**: Review [Integration Guide](../integration-guide/getting-started) or other documentation sections.
+**Next Steps**: Review [Integration Guide](../../integration-guide/overview) or other documentation sections.

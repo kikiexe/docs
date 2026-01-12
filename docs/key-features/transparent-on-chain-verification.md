@@ -48,4 +48,4 @@ Aave/Lido/Uniswap Strategies ✅ Verified
 
 **Congratulations!** Key Features section complete.
 
-**Next**: [Technical Details](../technical-details/overview)
+**Next**: [Technical Details](../smart-contracts/overview)
