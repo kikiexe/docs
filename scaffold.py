@@ -1,7 +1,11 @@
 import os
 import json
 
-base_dir = "d:/documents/docs"
+# Menggunakan relative path agar aman dijalankan di mana saja
+# Asumsi: script ini ada di root project, sejajar dengan folder 'docs'
+base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs")
+
+print(f"Targeting directory: {base_dir}")
 
 structure = {
     "introduction": {
@@ -10,8 +14,8 @@ structure = {
         "items": {
             "context-positioning.md": "Context & Positioning",
             "overview.md": "Overview",
-            "why-veilfi-exists": {
-                "label": "Why Veilfi Exists",
+            "why-zk-yield-exists": {
+                "label": "Why ZK-Yield Exists",
                 "items": {
                     "problem-space.md": "Problem Space",
                     "solution-overview.md": "Solution Overview"
@@ -20,8 +24,8 @@ structure = {
             "who-is-this-for": {
                 "label": "Who is this for?",
                 "items": {
-                    "borrowers.md": "Borrowers",
-                    "liquidity-providers.md": "Liquidity Providers",
+                    "retail-investors.md": "Retail Investors",
+                    "privacy-conscious-users.md": "Privacy-Conscious Users",
                     "integrators.md": "Integrators"
                 }
             }
@@ -34,27 +38,27 @@ structure = {
             "key-concepts-definitions": {
                 "label": "Key Concepts & Definitions",
                 "items": {
-                    "credit-position.md": "Credit Position",
-                    "collateral-efficiency.md": "Collateral Efficiency",
-                    "leverage-abstraction.md": "Leverage Abstraction",
-                    "risk-tranching.md": "Risk Tranching"
+                    "yield-aggregation.md": "Yield Aggregation",
+                    "zero-knowledge-proofs.md": "Zero-Knowledge Proofs",
+                    "privacy-preserving-defi.md": "Privacy-Preserving DeFi",
+                    "kyc-compliance.md": "KYC Compliance"
                 }
             },
             "core-principles": {
                 "label": "Core Principles",
                 "items": {
-                    "capital-efficiency-first.md": "Capital Efficiency First",
-                    "risk-isolation.md": "Risk Isolation",
-                    "permissionless-credit.md": "Permissionless Credit",
-                    "modular-growth.md": "Modular Growth"
+                    "privacy-first.md": "Privacy First",
+                    "yield-optimization.md": "Yield Optimization",
+                    "compliance-friendly.md": "Compliance Friendly",
+                    "modular-strategies.md": "Modular Strategies"
                 }
             },
-            "credit-model-overview": {
-                "label": "Credit Model Overview",
+            "yield-model-overview": {
+                "label": "Yield Model Overview",
                 "items": {
-                    "how-borrowing-works.md": "How Borrowing Works in Veilfi",
-                    "how-risk-is-priced.md": "How Risk is Priced",
-                    "how-liquidation-differs.md": "How Liquidation Differs"
+                    "how-aggregation-works.md": "How Aggregation Works",
+                    "how-yields-are-distributed.md": "How Yields are Distributed",
+                    "strategy-allocation.md": "Strategy Allocation"
                 }
             }
         }
@@ -66,189 +70,300 @@ structure = {
             "architecture-overview": {
                 "label": "Architecture Overview",
                 "items": {
-                    "core-protocol-layer.md": "Core Protocol Layer",
-                    "strategy-market-layer.md": "Strategy / Market Layer",
-                    "oracle-risk-layer.md": "Oracle & Risk Layer"
+                    "core-vault-layer.md": "Core Vault Layer",
+                    "strategy-layer.md": "Strategy Layer",
+                    "zk-proof-layer.md": "ZK Proof Layer"
                 }
             },
             "modular-components": {
                 "label": "Modular Components",
                 "items": {
-                    "vaults-markets.md": "Vaults / Markets",
-                    "risk-engine.md": "Risk Engine",
-                    "liquidation-engine.md": "Liquidation Engine",
-                    "interest-rate-model.md": "Interest Rate Model"
+                    "strategy-vault.md": "Strategy Vault",
+                    "compliance-manager.md": "Compliance Manager",
+                    "zk-verifier.md": "ZK Verifier",
+                    "yield-distributor.md": "Yield Distributor"
                 }
             },
             "capital-flow-model": {
                 "label": "Capital Flow Model",
                 "items": {
-                    "supply-borrow-repay.md": "Supply → Borrow → Repay",
-                    "leverage-lifecycle.md": "Leverage Lifecycle",
-                    "liquidation-recovery-path.md": "Liquidation & Recovery Path"
+                    "deposit-allocation.md": "Deposit & Allocation",
+                    "yield-harvest-cycle.md": "Yield Harvest Cycle",
+                    "withdrawal-process.md": "Withdrawal Process"
+                }
+            }
+        }
+    },
+    "zk-circuits": {
+        "position": 4,
+        "label": "ZK Circuits",
+        "items": {
+            "introduction.md": "Introduction to ZK Circuits",
+            "circuit-design": {
+                "label": "Circuit Design",
+                "items": {
+                    "kyc-verification.md": "KYC Verification Circuit",
+                    "balance-proof.md": "Balance Proof Circuit"
+                }
+            },
+            "implementation": {
+                "label": "Implementation",
+                "items": {
+                    "circom-setup.md": "Circom Setup",
+                    "proof-generation.md": "Proof Generation",
+                    "proof-verification.md": "Proof Verification"
+                }
+            }
+        }
+    },
+    "defi-strategies": {
+        "position": 5,
+        "label": "DeFi Strategies",
+        "items": {
+            "overview.md": "Strategies Overview",
+            "supported-protocols": {
+                "label": "Supported Protocols",
+                "items": {
+                    "aave-strategy.md": "Aave Strategy",
+                    "lido-strategy.md": "Lido Strategy",
+                    "uniswap-strategy.md": "Uniswap Strategy"
+                }
+            },
+            "strategy-management": {
+                "label": "Strategy Management",
+                "items": {
+                    "allocation-algorithm.md": "Allocation Algorithm",
+                    "rebalancing.md": "Rebalancing",
+                    "risk-assessment.md": "Risk Assessment"
                 }
             }
         }
     },
     "core-flow": {
-        "position": 4,
+        "position": 6,
         "label": "Core Flow",
         "items": {
-            "lender-flow": {
-                "label": "Lender Flow",
+            "user-flow": {
+                "label": "User Flow",
                 "items": {
-                    "deposit-assets.md": "Deposit Assets",
-                    "earn-yield.md": "Earn Yield",
-                    "withdraw-liquidity.md": "Withdraw Liquidity"
+                    "wallet-connection.md": "Wallet Connection",
+                    "kyc-verification.md": "KYC Verification",
+                    "deposit-funds.md": "Deposit Funds",
+                    "view-yields.md": "View Yields",
+                    "withdraw-funds.md": "Withdraw Funds"
                 }
             },
-            "borrower-flow": {
-                "label": "Borrower Flow",
+            "admin-flow": {
+                "label": "Admin Flow",
                 "items": {
-                    "deposit-collateral.md": "Deposit Collateral",
-                    "open-credit-position.md": "Open Credit Position",
-                    "adjust-leverage.md": "Adjust Leverage",
-                    "repay-close-position.md": "Repay / Close Position"
+                    "manage-strategies.md": "Manage Strategies",
+                    "allocate-funds.md": "Allocate Funds",
+                    "harvest-yields.md": "Harvest Yields",
+                    "kyc-management.md": "KYC Management"
                 }
             },
-            "liquidation-flow": {
-                "label": "Liquidation Flow",
+            "privacy-flow": {
+                "label": "Privacy Flow",
                 "items": {
-                    "trigger-conditions.md": "Trigger Conditions",
-                    "execution.md": "Execution",
-                    "loss-allocation.md": "Loss Allocation"
+                    "generate-zk-proofs.md": "Generate ZK Proofs",
+                    "private-deposits.md": "Private Deposits",
+                    "private-withdrawals.md": "Private Withdrawals"
                 }
             }
         }
     },
     "key-features": {
-        "position": 5,
+        "position": 7,
         "label": "Key Features",
         "items": {
-            "modular-credit-markets.md": "Modular Credit Markets",
-            "capital-efficient-borrowing.md": "Capital-Efficient Borrowing",
-            "isolated-risk-vaults.md": "Isolated Risk Vaults",
-            "flexible-liquidation-mechanism.md": "Flexible Liquidation Mechanism",
-            "composable-credit-positions.md": "Composable Credit Positions"
+            "privacy-preserving-transactions.md": "Privacy-Preserving Transactions",
+            "multi-strategy-aggregation.md": "Multi-Strategy Aggregation",
+            "compliant-kyc-system.md": "Compliant KYC System",
+            "automated-yield-optimization.md": "Automated Yield Optimization",
+            "transparent-on-chain-verification.md": "Transparent On-Chain Verification"
         }
     },
-    "technical-details": {
-        "position": 6,
-        "label": "Technical Details",
+    "smart-contracts": {
+        "position": 8,
+        "label": "Smart Contracts",
         "items": {
-            "smart-contract-architecture": {
-                "label": "Smart Contract Architecture",
+            "overview.md": "Smart Contracts Overview",
+            "core-contracts": {
+                "label": "Core Contracts",
                 "items": {
-                    "core-contracts.md": "Core Contracts",
-                    "vault-market-contracts.md": "Vault / Market Contracts",
-                    "risk-oracle-contracts.md": "Risk & Oracle Contracts"
+                    "strategy-vault-v2.md": "StrategyVaultV2",
+                    "compliance-manager-v2.md": "ComplianceManagerV2"
                 }
             },
-            "permission-governance-model": {
-                "label": "Permission & Governance Model",
+            "strategy-contracts": {
+                "label": "Strategy Contracts",
                 "items": {
-                    "admin-roles.md": "Admin Roles",
-                    "parameter-control.md": "Parameter Control",
-                    "emergency-actions.md": "Emergency Actions"
+                    "mock-aave-strategy.md": "Mock Aave Strategy",
+                    "mock-lido-strategy.md": "Mock Lido Strategy",
+                    "mock-uniswap-strategy.md": "Mock Uniswap Strategy"
                 }
             },
-            "security-considerations": {
-                "label": "Security Considerations",
+            "deployment": {
+                "label": "Deployment",
                 "items": {
-                    "risk-isolation.md": "Risk Isolation",
-                    "oracle-dependency.md": "Oracle Dependency",
-                    "known-attack-surfaces.md": "Known Attack Surfaces"
+                    "mantle-sepolia.md": "Mantle Sepolia Testnet",
+                    "contract-addresses.md": "Contract Addresses",
+                    "verification.md": "Contract Verification"
                 }
             }
         }
     },
     "frontend-ux": {
-        "position": 7,
+        "position": 9,
         "label": "Frontend & UX",
         "items": {
-            "user-flows.md": "User Flows",
-            "risk-visualization.md": "Risk Visualization",
-            "position-management-ux.md": "Position Management UX"
+            "tech-stack.md": "Tech Stack",
+            "pages": {
+                "label": "Pages",
+                "items": {
+                    "landing-page.md": "Landing Page",
+                    "login-kyc.md": "Login & KYC",
+                    "dashboard.md": "Dashboard",
+                    "admin-panel.md": "Admin Panel"
+                }
+            },
+            "components": {
+                "label": "Components",
+                "items": {
+                    "wallet-connector.md": "Wallet Connector",
+                    "yield-display.md": "Yield Display",
+                    "strategy-cards.md": "Strategy Cards"
+                }
+            }
+        }
+    },
+    "developer-guide": {
+        "position": 10,
+        "label": "Developer Guide",
+        "items": {
+            "quick-start.md": "Quick Start",
+            "setup": {
+                "label": "Setup",
+                "items": {
+                    "prerequisites.md": "Prerequisites",
+                    "installation.md": "Installation",
+                    "environment-config.md": "Environment Configuration"
+                }
+            },
+            "development": {
+                "label": "Development",
+                "items": {
+                    "run-frontend.md": "Run Frontend",
+                    "deploy-contracts.md": "Deploy Contracts",
+                    "build-circuits.md": "Build ZK Circuits"
+                }
+            },
+            "testing": {
+                "label": "Testing",
+                "items": {
+                    "smart-contract-tests.md": "Smart Contract Tests",
+                    "zk-circuit-tests.md": "ZK Circuit Tests",
+                    "integration-tests.md": "Integration Tests"
+                }
+            }
         }
     },
     "integration-guide": {
-        "position": 8,
+        "position": 11,
         "label": "Integration Guide",
         "items": {
-            "read-only-integration.md": "Read-only Integration",
-            "opening-positions-programmatically.md": "Opening Positions Programmatically",
-            "risk-liquidation-monitoring.md": "Risk & Liquidation Monitoring"
+            "overview.md": "Integration Overview",
+            "read-contract-data.md": "Read Contract Data",
+            "interact-with-vault.md": "Interact with Vault",
+            "zk-proof-generation.md": "ZK Proof Generation"
         }
     },
-    "conclusion": {
-        "position": 9,
-        "label": "Conclusion",
+    "security": {
+        "position": 12,
+        "label": "Security",
         "items": {
-            "design-philosophy.md": "Design Philosophy",
+            "overview.md": "Security Overview",
+            "zk-proof-security.md": "ZK Proof Security",
+            "smart-contract-audit.md": "Smart Contract Audit",
+            "best-practices.md": "Best Practices",
+            "known-risks.md": "Known Risks"
+        }
+    },
+    "roadmap": {
+        "position": 13,
+        "label": "Roadmap",
+        "items": {
+            "current-status.md": "Current Status",
+            "upcoming-features.md": "Upcoming Features",
             "long-term-vision.md": "Long-term Vision"
         }
     },
     "support": {
-        "position": 10,
+        "position": 14,
         "label": "Support",
         "items": {
-            "documentation.md": "Documentation",
+            "faq.md": "FAQ",
+            "troubleshooting.md": "Troubleshooting",
             "community.md": "Community",
-            "security-contact.md": "Security Contact"
+            "contributing.md": "Contributing"
         }
     }
 }
 
-def create_items(parent_path, items, parent_position_base=0):
+def create_items(parent_path, items):
     for i, (key, value) in enumerate(items.items(), 1):
         path = os.path.join(parent_path, key)
         
-        # If it's a dictionary, it's a folder/category
+        # If dictionary -> create folder & category json
         if isinstance(value, dict):
             if not os.path.exists(path):
+                print(f"Creating directory: {path}")
                 os.makedirs(path)
             
-            # Create _category_.json
             cat_label = value.get("label", key)
             cat_json = {
                 "label": cat_label,
-                "position": i, # Enforce order
+                "position": i, 
                 "link": {"type": "generated-index"}
             }
+            # Always update category json to ensure labels are correct
             with open(os.path.join(path, "_category_.json"), "w") as f:
                 json.dump(cat_json, f, indent=2)
             
-            # Recurse
             if "items" in value:
                 create_items(path, value["items"])
         
-        # If it's a string, it's a file title
+        # If string -> create markdown file
         elif isinstance(value, str):
-            # Check if file exists, if so skip (or overwrite if we want to reset)
-            # user asked to "make it like this", so we will create if not exists
             if not os.path.exists(path):
+                print(f"Creating file: {path}")
                 content = f"---\ntitle: {value}\nsidebar_position: {i}\n---\n\n# {value}\n\nContent coming soon...\n"
                 with open(path, "w", encoding='utf-8') as f:
                     f.write(content)
+            else:
+                print(f"Exists (skipping): {path}")
 
 # Process top level
-for key, value in structure.items():
-    path = os.path.join(base_dir, key)
-    if not os.path.exists(path):
-        os.makedirs(path)
-    
-    cat_label = value.get("label", key)
-    cat_position = value.get("position", 1)
-    
-    cat_json = {
-        "label": cat_label,
-        "position": cat_position,
-        "link": {"type": "generated-index"}
-    }
-    with open(os.path.join(path, "_category_.json"), "w") as f:
-        json.dump(cat_json, f, indent=2)
-    
-    if "items" in value:
-        create_items(path, value["items"])
+if not os.path.exists(base_dir):
+    print(f"Error: Docs directory not found at {base_dir}")
+else:
+    for key, value in structure.items():
+        path = os.path.join(base_dir, key)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        
+        cat_label = value.get("label", key)
+        cat_position = value.get("position", 1)
+        
+        cat_json = {
+            "label": cat_label,
+            "position": cat_position,
+            "link": {"type": "generated-index"}
+        }
+        with open(os.path.join(path, "_category_.json"), "w") as f:
+            json.dump(cat_json, f, indent=2)
+        
+        if "items" in value:
+            create_items(path, value["items"])
 
-print("Docs scaffolding complete.")
+    print("\n[SUCCESS] Docs scaffolding complete. Missing files created.")
