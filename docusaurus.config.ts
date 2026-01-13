@@ -7,7 +7,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Veilfi',
   tagline: 'Privacy-Preserving Yield Aggregator',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/logo.png',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -66,7 +66,7 @@ const config: Config = {
       title: 'Veilfi',
       logo: {
         alt: 'Veilfi Logo',
-        src: 'https://em-content.zobj.net/source/microsoft-teams/363/triangle_25b6-fe0f.png', // Temporary placeholder matching triangle shape
+        src: 'img/logo.png',
       },
       items: [
         {

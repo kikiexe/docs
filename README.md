@@ -1,4 +1,4 @@
-# 🔐 ZK-Yield
+# 🔐 Veilfi
 
 **Privacy-Preserving Yield Aggregator with Zero-Knowledge Proofs**
 
@@ -6,7 +6,7 @@ A decentralized yield aggregation protocol that allows users to deposit, earn yi
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Mantle Sepolia](https://img.shields.io/badge/Network-Mantle%20Sepolia-blue)](https://explorer.sepolia.mantle.xyz)
-[![Documentation](https://img.shields.io/badge/Docs-Live-green)](https://zk-yield-docs.vercel.app)
+[![Documentation](https://img.shields.io/badge/Docs-Live-green)](https://www.veilfi.my.id/)
 
 ---
 
